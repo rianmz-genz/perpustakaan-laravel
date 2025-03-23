@@ -1,0 +1,40 @@
+@startuml FLOWPERPUSTAKAAN
+start
+
+:Admin login ke dashboard;
+:Admin menambahkan buku;
+:Buku tersimpan dalam database;
+
+:Anggota login ke aplikasi;
+:Anggota mencari buku;
+:Anggota melihat detail buku;
+
+if (Stok tersedia?) then (Ya)
+    :Anggota mengajukan peminjaman;
+    :Sistem mencatat permintaan;
+    :Petugas menerima notifikasi;
+    :Petugas memverifikasi peminjaman;
+
+    if (Peminjaman disetujui?) then (Ya)
+        :Sistem mengurangi stok buku;
+        :Anggota menerima notifikasi peminjaman berhasil;
+        
+        :Anggota membaca buku;
+        :Anggota membawa buku kembali sebelum jatuh tempo;
+        
+        :Petugas memverifikasi pengembalian;
+        if (Terlambat?) then (Ya)
+            :Sistem menghitung denda;
+        endif
+        
+        :Stok buku ditambah kembali;
+        :Sistem mencatat riwayat peminjaman;
+    else (Tidak)
+        :Anggota menerima notifikasi peminjaman ditolak;
+    endif
+else (Tidak)
+    :Anggota tidak bisa meminjam;
+endif
+
+stop
+@enduml

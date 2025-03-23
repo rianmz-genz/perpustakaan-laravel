@@ -1,0 +1,68 @@
+@startuml Perpustakaan
+
+entity User {
+    * id : UUID [PK]
+    * name : VARCHAR(255)
+    * email : VARCHAR(255) [UNIQUE]
+    * password : VARCHAR(255)
+    * role : ENUM('admin', 'petugas', 'anggota')
+    * created_at : TIMESTAMP
+    * updated_at : TIMESTAMP
+}
+
+entity Buku {
+    * id : UUID [PK]
+    * judul : VARCHAR(255)
+    * penulis : VARCHAR(255)
+    * penerbit : VARCHAR(255)
+    * tahun_terbit : INT
+    * isbn : VARCHAR(50) [UNIQUE]
+    * stok : INT
+    * created_at : TIMESTAMP
+    * updated_at : TIMESTAMP
+}
+
+entity Peminjaman {
+    * id : UUID [PK]
+    * user_id : UUID [FK -> User.id]
+    * buku_id : UUID [FK -> Buku.id]
+    * tanggal_pinjam : DATE
+    * tanggal_kembali : DATE
+    * status : ENUM('dipinjam', 'dikembalikan', 'terlambat')
+    * created_at : TIMESTAMP
+    * updated_at : TIMESTAMP
+}
+
+entity Pengembalian {
+    * id : UUID [PK]
+    * peminjaman_id : UUID [FK -> Peminjaman.id]
+    * tanggal_pengembalian : DATE
+    * denda : DECIMAL(10,2)
+    * created_at : TIMESTAMP
+    * updated_at : TIMESTAMP
+}
+
+entity Notifikasi {
+    * id : UUID [PK]
+    * user_id : UUID [FK -> User.id]
+    * pesan : TEXT
+    * status : ENUM('terkirim', 'dibaca')
+    * created_at : TIMESTAMP
+}
+
+entity Histori {
+    * id : UUID [PK]
+    * user_id : UUID [FK -> User.id]
+    * buku_id : UUID [FK -> Buku.id]
+    * aktivitas : TEXT
+    * created_at : TIMESTAMP
+}
+
+User ||--o{ Peminjaman : "melakukan"
+Buku ||--o{ Peminjaman : "dipinjam"
+Peminjaman ||--|| Pengembalian : "dikembalikan"
+User ||--o{ Notifikasi : "menerima"
+User ||--o{ Histori : "mempunyai"
+Buku ||--o{ Histori : "tercatat"
+
+@enduml
