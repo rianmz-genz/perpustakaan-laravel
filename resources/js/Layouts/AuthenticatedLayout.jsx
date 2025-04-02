@@ -36,6 +36,12 @@ export default function AuthenticatedLayout({ header, children }) {
                                 >
                                     Buku
                                 </NavLink>
+                                <NavLink
+                                    href={route('users.index')}
+                                    active={route().current("users.index")}
+                                >
+                                    User
+                                </NavLink>
                             </div>
                         </div>
 
