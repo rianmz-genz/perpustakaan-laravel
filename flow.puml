@@ -23,11 +23,24 @@ if (Stok tersedia?) then (Ya)
         :Anggota membawa buku kembali sebelum jatuh tempo;
         
         :Petugas memverifikasi pengembalian;
-        if (Terlambat?) then (Ya)
-            :Sistem menghitung denda;
+        if (Buku rusak?) then (Ya)
+            :Petugas mencatat kondisi kerusakan;
+            :Sistem menghitung denda kerusakan;
+            :Anggota menerima notifikasi denda kerusakan;
+        else (Tidak)
+            if (Buku hilang?) then (Ya)
+                :Petugas mencatat kehilangan;
+                :Sistem menghitung denda kehilangan;
+                :Anggota menerima notifikasi dan instruksi penggantian;
+            else (Tidak)
+                if (Terlambat?) then (Ya)
+                    :Sistem menghitung denda keterlambatan;
+                    :Anggota menerima notifikasi denda keterlambatan;
+                endif
+                :Stok buku ditambah kembali;
+            endif
         endif
-        
-        :Stok buku ditambah kembali;
+
         :Sistem mencatat riwayat peminjaman;
     else (Tidak)
         :Anggota menerima notifikasi peminjaman ditolak;
