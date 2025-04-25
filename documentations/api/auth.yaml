@@ -1,0 +1,84 @@
+openapi: 3.0.3
+info:
+  title: Perpustakaan API
+  description: API Authentication endpoints using Sanctum
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8000/api
+    description: Local server
+
+paths:
+  /login:
+    post:
+      summary: Login
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  format: password
+                  example: secret
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Login successful
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: 1|Xx9RANDOMAPITOKEN1abcxyz
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                            example: 8e758c12-3c70-4cb7-b137-3deee6b21301
+                          name:
+                            type: string
+                            example: John Doe
+                          email:
+                            type: string
+                            format: email
+                            example: user@example.com
+                          role:
+                            type: string
+                            example: admin
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Invalid credentials

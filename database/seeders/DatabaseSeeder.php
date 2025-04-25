@@ -18,9 +18,13 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'admin@example.com',
+            'role' => 'admin'
         ]);
-
-        Buku::factory(10)->create();  // Generate 10 data buku dummy
+        User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'anggota@example.com',
+            'role' => 'anggota'
+        ]);
     }
 }

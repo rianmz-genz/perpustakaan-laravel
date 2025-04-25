@@ -8,18 +8,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
-
-    protected static function boot() {
-        parent::boot();
-        static::creating(function ($model) {
-            $model->id = Str::uuid();
-        });
-    }
+    use HasFactory, Notifiable, HasApiTokens;
 
 
     /**
@@ -57,15 +51,18 @@ class User extends Authenticatable
         ];
     }
 
-    public function peminjaman(): HasMany {
-        return $this->hasMany(Peminjaman::class);
+    public function mahasiswa()
+    {
+        return $this->hasOne(Mahasiswa::class);
     }
 
-    public function notifikasi(): HasMany {
-        return $this->hasMany(Notifikasi::class);
+    public function loanRequests()
+    {
+        return $this->hasMany(LoanRequest::class);
     }
 
-    public function histori(): HasMany {
-        return $this->hasMany(Histori::class);
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
     }
 }
