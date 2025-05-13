@@ -42,6 +42,12 @@ export default function AuthenticatedLayout({ header, children }) {
                                 >
                                     Buku
                                 </NavLink>
+                                <NavLink
+                                    href={route("loanrequests.index")}
+                                    active={route().current("loanrequests.index")}
+                                >
+                                    Permintaan Peminjaman
+                                </NavLink>
                             </div>
                         </div>
 

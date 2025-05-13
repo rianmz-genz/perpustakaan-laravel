@@ -29,11 +29,12 @@ return new class extends Migration
             $table->year('year_published');
             $table->integer('total_stock');
             $table->integer('available_stock');
+            $table->string('cover_image')->nullable(); // Tambahkan ini
             $table->timestamps();
         });
 
         // Loan Requests
-        Schema::create('loanrequests', function (Blueprint $table) {
+        Schema::create('loan_requests', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('book_id')->constrained()->onDelete('cascade');
@@ -45,7 +46,7 @@ return new class extends Migration
         // Loans
         Schema::create('loans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('request_id')->constrained('loanrequests')->onDelete('cascade');
+            $table->foreignId('request_id')->constrained('loan_requests')->onDelete('cascade');
             $table->date('loan_date');
             $table->date('due_date');
             $table->date('return_date')->nullable();
@@ -83,7 +84,7 @@ return new class extends Migration
         Schema::dropIfExists('notifications');
         Schema::dropIfExists('returns');
         Schema::dropIfExists('loans');
-        Schema::dropIfExists('loanrequests');
+        Schema::dropIfExists('loan_requests');
         Schema::dropIfExists('books');
         Schema::dropIfExists('mahasiswas');
     }

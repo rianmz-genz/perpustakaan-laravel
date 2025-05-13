@@ -29,18 +29,18 @@ class BookController extends Controller
             'year_published' => 'required|digits:4|integer',
             'total_stock' => 'required|integer|min:0',
             'available_stock' => 'required|integer|min:0',
+            'cover_image' => 'nullable|image|max:2048', // validasi cover
         ]);
 
-        Book::create($request->all());
+        $data = $request->only(['title', 'author', 'publisher', 'year_published', 'total_stock', 'available_stock']);
+
+        if ($request->hasFile('cover_image')) {
+            $data['cover_image'] = $request->file('cover_image')->store('covers', 'public');
+        }
+
+        Book::create($data);
 
         return redirect()->route('books.index');
-    }
-
-    public function edit(Book $book)
-    {
-        return Inertia::render('Book/Create', [
-            'book' => $book
-        ]);
     }
 
     public function update(Request $request, Book $book)
@@ -52,11 +52,26 @@ class BookController extends Controller
             'year_published' => 'required|digits:4|integer',
             'total_stock' => 'required|integer|min:0',
             'available_stock' => 'required|integer|min:0',
+            'cover_image' => 'nullable|image|max:2048', // validasi cover
         ]);
 
-        $book->update($request->all());
+        $data = $request->only(['title', 'author', 'publisher', 'year_published', 'total_stock', 'available_stock']);
+
+        if ($request->hasFile('cover_image')) {
+            $data['cover_image'] = $request->file('cover_image')->store('covers', 'public');
+        }
+
+        $book->update($data);
 
         return redirect()->route('books.index');
+    }
+
+
+    public function edit(Book $book)
+    {
+        return Inertia::render('Book/Create', [
+            'book' => $book
+        ]);
     }
 
     public function destroy(Book $book)
