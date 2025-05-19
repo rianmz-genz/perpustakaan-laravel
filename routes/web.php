@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\LoanController;
 use App\Http\Controllers\LoanRequestController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -29,6 +30,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('users', UserController::class);
     Route::resource('books', BookController::class);
     Route::resource('loanrequests', LoanRequestController::class);
+    Route::resource('loans', LoanController::class);
+    Route::post('/loanrequests/{id}/acc-or-reject', [LoanRequestController::class, 'accOrRejectRequest'])
+        ->name('loanRequests.accOrRejectRequest');
+    Route::post('/returns/{loan}', [LoanController::class, 'setReturn'])->name('loans.setReturn');
 });
 
 require __DIR__ . '/auth.php';

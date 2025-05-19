@@ -48,6 +48,12 @@ export default function AuthenticatedLayout({ header, children }) {
                                 >
                                     Permintaan Peminjaman
                                 </NavLink>
+                                <NavLink
+                                    href={route("loans.index")}
+                                    active={route().current("loans.index")}
+                                >
+                                    Peminjaman
+                                </NavLink>
                             </div>
                         </div>
 

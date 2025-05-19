@@ -16,10 +16,16 @@ export default function BookForm({ book = null }) {
         available_stock: book?.available_stock || 0,
         cover_image: null, // Tambahkan ini
     });
-
     const submit = (e) => {
         e.preventDefault();
-        isEdit ? put(`/books/${book.id}`) : post("/books");
+
+        if (isEdit) {
+            post(`/books/${book.id}`, {
+                method: "put", // Method spoofing
+            });
+        } else {
+            post("/books", { forceFormData: true });
+        }
     };
 
     return (

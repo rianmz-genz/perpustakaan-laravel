@@ -20,4 +20,30 @@ class Loan extends Model
     {
         return $this->hasOne(ReturnBook::class); // Custom naming to avoid conflict with `return` keyword
     }
+    public function user()
+    {
+        return $this->hasOneThrough(
+            User::class,
+            LoanRequest::class,
+            'id',        // Foreign key on LoanRequest
+            'id',        // Foreign key on User
+            'request_id', // Local key on Loan
+            'user_id'     // Local key on LoanRequest
+        );
+    }
+
+    public function book()
+    {
+        return $this->hasOneThrough(
+            Book::class,
+            LoanRequest::class,
+            'id',        // Foreign key on LoanRequest
+            'id',        // Foreign key on Book
+            'request_id', // Local key on Loan
+            'book_id'     // Local key on LoanRequest
+        );
+    }
+        protected $casts = [
+        'is_returned' => 'boolean',
+    ];
 }

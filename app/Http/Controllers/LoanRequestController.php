@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Loan;
 use App\Models\LoanRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -12,7 +13,7 @@ class LoanRequestController extends Controller
 {
     public function index()
     {
-        $loanRequests = LoanRequest::with(['user', 'book'])->latest()->get();
+        $loanRequests = LoanRequest::with(['user', 'book', 'loan'])->latest()->get();
         return Inertia::render('LoanRequest/Index', [
             'loanRequests' => $loanRequests
         ]);
@@ -42,7 +43,7 @@ class LoanRequestController extends Controller
 
     public function edit($id)
     {
-        $loanRequest = LoanRequest::findOrFail($id); // Bisa juga withTrashed() jika pakai soft delete
+        $loanRequest = LoanRequest::findOrFail($id); 
 
         return Inertia::render('LoanRequest/Create', [
             'loanRequest' => $loanRequest->load(['user', 'book']),
@@ -53,7 +54,7 @@ class LoanRequestController extends Controller
 
     public function update(Request $request, $id)
     {
-        $loanRequest = LoanRequest::findOrFail($id); // Bisa juga withTrashed() jika pakai soft delete
+        $loanRequest = LoanRequest::findOrFail($id); 
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'book_id' => 'required|exists:books,id',
@@ -66,9 +67,33 @@ class LoanRequestController extends Controller
         return redirect()->route('loanrequests.index');
     }
 
+    public function accOrRejectRequest(Request $request, $id,) {
+         $request->validate([
+            'due_date' => 'sometimes|date',
+            'status' => 'required|in:pending,approved,rejected',
+        ]);
+        $loanRequest = LoanRequest::findOrFail($id); 
+        if($request->status == "approved") {
+            $loanRequest->update([
+                'status' => 'approved'
+            ]);
+            $newLoan = Loan::create([
+                'due_date' => $request->due_date,
+                'loan_date' => $loanRequest->request_date,
+                'request_id' => $loanRequest->id,
+                'is_returned' => false
+            ]);
+
+        } else if($request->status == "rejected") {
+            $loanRequest->update([
+                'status' => 'rejected'
+            ]);
+        }
+    }
+
     public function destroy($id)
     {
-        $loanRequest = LoanRequest::findOrFail($id); // Bisa juga withTrashed() jika pakai soft delete
+        $loanRequest = LoanRequest::findOrFail($id); 
         $loanRequest->delete();
 
         return redirect()->route('loanrequests.index');

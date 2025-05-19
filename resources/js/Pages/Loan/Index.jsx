@@ -17,59 +17,67 @@ import {
     DialogFooter,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
 
-export default function Index({ loanRequests }) {
+export default function Index({ loans }) {
     const { delete: destroy } = useForm();
-    console.log(loanRequests);
+    console.log(loans);
     return (
-        <AuthenticatedLayout header={<h2>Loan Requests</h2>}>
+        <AuthenticatedLayout header={<h2>Peminjaman</h2>}>
             <Head title="Loan Requests" />
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto space-y-6 sm:px-6 lg:px-8">
                     <Card>
                         <CardHeader className="flex justify-between items-start">
-                            <CardTitle>List of Permintaan Peminjaman</CardTitle>
-                            <Link href={route("loanrequests.create")}>
-                                <Button>Create Permintaan Peminjaman</Button>
-                            </Link>
+                            <CardTitle>List of Peminjaman</CardTitle>
+                            {/* <Link href={route("loans.create")}>
+                                <Button>Create Peminjaman</Button>
+                            </Link> */}
                         </CardHeader>
                         <CardContent className="overflow-x-auto">
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableCell>User</TableCell>
-                                        <TableCell>Book</TableCell>
-                                        <TableCell>Request</TableCell>
-                                        <TableCell>Status</TableCell>
+                                        <TableCell>
+                                            Permintaan Peminjaman
+                                        </TableCell>
+                                        <TableCell>
+                                            Tanggal Peminjaman
+                                        </TableCell>
+                                        <TableCell>
+                                            Tenggat Peminjaman
+                                        </TableCell>
+                                        <TableCell>
+                                            Sudah Dikembalikan
+                                        </TableCell>
                                         <TableCell>Actions</TableCell>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {loanRequests.map((lr) => (
+                                    {loans.map((lr) => (
                                         <TableRow key={lr.id}>
                                             <TableCell className="p-2">
-                                                {lr.user?.name}
-                                            </TableCell>
-                                            <TableCell className="p-2">
-                                                {lr.book?.title}
-                                            </TableCell>
-                                            <TableCell className="p-2">
-                                                {lr.request_date}
-                                            </TableCell>
-                                            <TableCell className="p-2 space-x-3">
-                                                {statusMapping[lr.status]}
-                                                {lr.loan && <Link
-                                                    className="underline"
-                                                    href={`/loans/${lr.loan.id}/edit`}
+                                                <Link
+                                                className="underline"
+                                                    href={`/loanrequests/${lr.request.id}/edit`}
                                                 >
-                                                    Peminjaman {lr.loan.id}
-                                                </Link>}
+                                                    Permintaan {lr.request.id}
+                                                </Link>
+                                            </TableCell>
+                                            <TableCell className="p-2">
+                                                {lr.loan_date}
+                                            </TableCell>
+                                            <TableCell className="p-2">
+                                                {lr.due_date}
+                                            </TableCell>
+                                            <TableCell className="p-2">
+                                                {lr.is_returned
+                                                    ? "Ya"
+                                                    : "Belum"}
                                             </TableCell>
                                             <TableCell className="p-2 space-x-2">
                                                 <Link
-                                                    href={`/loanrequests/${lr.id}/edit`}
+                                                    href={`/loans/${lr.id}/edit`}
                                                 >
                                                     <Button size="sm">
                                                         Edit
@@ -100,7 +108,7 @@ export default function Index({ loanRequests }) {
                                                                 size="sm"
                                                                 onClick={() => {
                                                                     destroy(
-                                                                        `/loanrequests/${lr.id}`
+                                                                        `/loans/${lr.id}`
                                                                     );
                                                                 }}
                                                             >
@@ -121,9 +129,3 @@ export default function Index({ loanRequests }) {
         </AuthenticatedLayout>
     );
 }
-
-const statusMapping = {
-    pending: <Badge variant={"yellow"}>Pending</Badge>,
-    approved: <Badge variant={"default"}>Diterima</Badge>,
-    rejected: <Badge variant={"destructive"}>Ditolak</Badge>,
-};

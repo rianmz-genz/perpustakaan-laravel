@@ -19,4 +19,9 @@ class ReturnBook extends Model
     {
         return $this->belongsTo(Loan::class);
     }
+        protected $casts = [
+        'is_damaged' => 'boolean',
+        'is_lost' => 'boolean',
+        'is_late' => 'boolean',
+    ];
 }
