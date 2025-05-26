@@ -1,0 +1,290 @@
+openapi: 3.0.3
+info:
+  title: Perpustakaan API
+  description: API Authentication endpoints using Sanctum
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8000/api
+    description: Local server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+# 1|obvkCNzG9HeUQjLZdU5fSU86WVyE243KZgAduefNdaff566b
+paths:
+  /books:
+    get:
+      summary: Get all books
+      tags:
+        - Books
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of books
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: List of books
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        title:
+                          type: string
+                          example: Pemrograman Laravel
+                        author:
+                          type: string
+                          example: Budi
+                        publisher:
+                          type: string
+                          example: Informatika
+                        year_published:
+                          type: string
+                          example: '2023'
+                        total_stock:
+                          type: integer
+                          example: 10
+                        available_stock:
+                          type: integer
+                          example: 8
+                        cover_image:
+                          type: string
+                          format: uri
+                          example: http://localhost:8000/storage/covers/laravel.png
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Unauthorized
+  /loanrequests:
+    get:
+      summary: Get all loan requests by the authenticated user
+      tags:
+        - Loan Requests
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of loan requests
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: List of loan requests
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        user_id:
+                          type: integer
+                          example: 3
+                        book_id:
+                          type: integer
+                          example: 5
+                        request_date:
+                          type: string
+                          format: date
+                          example: "2025-05-24"
+                        status:
+                          type: string
+                          enum: [pending, approved, rejected]
+                          example: pending
+                        created_at:
+                          type: string
+                          format: date-time
+                          example: "2025-05-24T14:00:00Z"
+                        updated_at:
+                          type: string
+                          format: date-time
+                          example: "2025-05-24T14:00:00Z"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Unauthorized
+        
+    post:
+      summary: Create a loan request
+      tags:
+        - Loan Requests
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - book_id
+                - request_date
+              properties:
+                book_id:
+                  type: integer
+                  example: 1
+                request_date:
+                  type: string
+                  format: date
+                  example: "2025-05-24"
+      responses:
+        '200':
+          description: Loan request created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Berhasil membuat permintaan peminjaman
+                  data:
+                    type: array
+                    items: {}
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+                  errors:
+                    type: object
+                    properties:
+                      book_id:
+                        type: array
+                        items:
+                          type: string
+                        example: ["The book id field is required."]
+                      request_date:
+                        type: array
+                        items:
+                          type: string
+                        example: ["The request date field is required."]
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Unauthorized
+  /loans:
+    get:
+      summary: Get all loan requests by the authenticated user
+      tags:
+        - Loan Requests
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of loan requests
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: List of loan requests
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        user_id:
+                          type: integer
+                          example: 3
+                        book_id:
+                          type: integer
+                          example: 5
+                        request_date:
+                          type: string
+                          format: date
+                          example: "2025-05-24"
+                        status:
+                          type: string
+                          enum: [pending, approved, rejected]
+                          example: pending
+                        created_at:
+                          type: string
+                          format: date-time
+                          example: "2025-05-24T14:00:00Z"
+                        updated_at:
+                          type: string
+                          format: date-time
+                          example: "2025-05-24T14:00:00Z"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Unauthorized
+
+security:
+  - bearerAuth: []

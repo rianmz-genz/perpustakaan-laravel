@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
 use App\Models\Loan;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -122,6 +123,12 @@ class LoanController extends Controller
             'is_returned' => true,
             'return_date' => $validated['return_date'],
         ]);
+
+        if($validated['fine_type'] == 'none') {
+            $book = Book::findOrFail($loan->book->id);
+            $book->available_stock++;
+            $book->save();
+        }
 
         return redirect()->route('loans.index')->with('success', 'Pengembalian berhasil disimpan.');
     }

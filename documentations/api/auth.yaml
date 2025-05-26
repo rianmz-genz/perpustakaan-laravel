@@ -27,11 +27,11 @@ paths:
                 email:
                   type: string
                   format: email
-                  example: user@example.com
+                  example: anggota@example.com
                 password:
                   type: string
                   format: password
-                  example: secret
+                  example: password
       responses:
         '200':
           description: Login successful

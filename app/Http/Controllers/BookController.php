@@ -23,13 +23,14 @@ class BookController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'id' => 'nullable|exists:books,id',
             'title' => 'required|string',
             'author' => 'required|string|max:100',
             'publisher' => 'required|string|max:100',
             'year_published' => 'required|digits:4|integer',
             'total_stock' => 'required|integer|min:0',
             'available_stock' => 'required|integer|min:0',
-            'cover_image' => 'nullable|image|max:2048', // validasi cover
+            'cover_image' => 'nullable|image|max:2048',
         ]);
 
         $data = $request->only(['title', 'author', 'publisher', 'year_published', 'total_stock', 'available_stock']);
@@ -38,14 +39,22 @@ class BookController extends Controller
             $data['cover_image'] = $request->file('cover_image')->store('covers', 'public');
         }
 
-        Book::create($data);
+        if ($request->filled('id')) {
+            // UPDATE
+            $book = Book::findOrFail($request->id);
+            $book->update($data);
+        } else {
+            // CREATE
+            Book::create($data);
+        }
 
-        return redirect()->route('books.index');
+        return redirect()->route('books.index')->with('success', 'Book saved successfully.');
     }
+
 
     public function update(Request $request, Book $book)
     {
-        dd($request->all());
+        // dd($request->all());
         $request->validate([
             'title' => 'required|string',
             'author' => 'required|string|max:100',

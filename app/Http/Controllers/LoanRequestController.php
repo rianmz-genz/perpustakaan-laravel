@@ -6,7 +6,9 @@ use App\Models\Book;
 use App\Models\Loan;
 use App\Models\LoanRequest;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class LoanRequestController extends Controller
@@ -43,7 +45,7 @@ class LoanRequestController extends Controller
 
     public function edit($id)
     {
-        $loanRequest = LoanRequest::findOrFail($id); 
+        $loanRequest = LoanRequest::findOrFail($id);
 
         return Inertia::render('LoanRequest/Create', [
             'loanRequest' => $loanRequest->load(['user', 'book']),
@@ -54,7 +56,7 @@ class LoanRequestController extends Controller
 
     public function update(Request $request, $id)
     {
-        $loanRequest = LoanRequest::findOrFail($id); 
+        $loanRequest = LoanRequest::findOrFail($id);
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'book_id' => 'required|exists:books,id',
@@ -67,33 +69,65 @@ class LoanRequestController extends Controller
         return redirect()->route('loanrequests.index');
     }
 
-    public function accOrRejectRequest(Request $request, $id,) {
-         $request->validate([
-            'due_date' => 'sometimes|date',
+
+    public function accOrRejectRequest(Request $request, $id)
+    {
+        $request->validate([
+            'due_date' => 'required_if:status,approved|date',
             'status' => 'required|in:pending,approved,rejected',
         ]);
-        $loanRequest = LoanRequest::findOrFail($id); 
-        if($request->status == "approved") {
-            $loanRequest->update([
-                'status' => 'approved'
-            ]);
-            $newLoan = Loan::create([
-                'due_date' => $request->due_date,
-                'loan_date' => $loanRequest->request_date,
-                'request_id' => $loanRequest->id,
-                'is_returned' => false
-            ]);
 
-        } else if($request->status == "rejected") {
-            $loanRequest->update([
-                'status' => 'rejected'
+        $loanRequest = LoanRequest::findOrFail($id);
+
+        if ($loanRequest->status !== 'pending') {
+            return back()->withErrors([
+                'message' => 'Loan request has already been processed.',
             ]);
         }
+
+        if ($request->status === 'approved') {
+            $book = Book::findOrFail($loanRequest->book_id);
+
+            if ($book->available_stock <= 0) {
+                return back()->withErrors([
+                    'message' => 'Book is out of stock.',
+                ]);
+            }
+
+            DB::transaction(function () use ($loanRequest, $book, $request) {
+                $loanRequest->update([
+                    'status' => 'approved',
+                ]);
+
+                $book->decrement('available_stock');
+
+                Loan::create([
+                    'request_id' => $loanRequest->id,
+                    'loan_date' => $loanRequest->request_date,
+                    'due_date' => $request->due_date,
+                    'is_returned' => false,
+                ]);
+            });
+
+            return back()->with('success', 'Loan approved successfully.');
+        }
+
+        if ($request->status === 'rejected') {
+            $loanRequest->update([
+                'status' => 'rejected',
+            ]);
+
+            return back()->with('success', 'Loan request rejected.');
+        }
+
+        return back();
     }
+
+
 
     public function destroy($id)
     {
-        $loanRequest = LoanRequest::findOrFail($id); 
+        $loanRequest = LoanRequest::findOrFail($id);
         $loanRequest->delete();
 
         return redirect()->route('loanrequests.index');

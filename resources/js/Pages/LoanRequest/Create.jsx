@@ -12,6 +12,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { toast } from "@/hooks/use-toast";
 
 export default function LoanRequestForm({
     loanRequest = null,
@@ -23,6 +24,7 @@ export default function LoanRequestForm({
     const [dueDate, setDueDate] = useState(
         new Date().toISOString().slice(0, 10)
     );
+    const [error, setError] = useState("");
 
     const { data, setData, post, put, processing, errors } = useForm({
         user_id: loanRequest?.user_id || "",
@@ -33,21 +35,40 @@ export default function LoanRequestForm({
     });
 
     const handleApprove = () => {
-        router.post(`/loanrequests/${loanRequest.id}/acc-or-reject`, {
-            status: "approved",
-            due_date: dueDate,
-        });
+        router.post(
+            `/loanrequests/${loanRequest.id}/acc-or-reject`,
+            {
+                status: "approved",
+                due_date: dueDate,
+            },
+            {
+                onSuccess: () => setShowApproveDialog(false),
+                onError: (err) => setError(err.message),
+            }
+        );
+        setShowApproveDialog(false);
     };
 
     const handleReject = () => {
-        router.post(`/loanrequests/${loanRequest.id}/acc-or-reject`, {
-            status: "rejected",
-        });
+        router.post(
+            `/loanrequests/${loanRequest.id}/acc-or-reject`,
+            {
+                status: "rejected",
+            },
+            {
+                onError: (err) => setError(err.message),
+            }
+        );
+        setShowApproveDialog(false);
     };
 
     const submit = (e) => {
+        toast({});
         e.preventDefault();
-        isEdit ? put(`/loanrequests/${loanRequest.id}`) : post("/loanrequests");
+        const action = isEdit ? put : post;
+        action(isEdit ? `/loanrequests/${loanRequest.id}` : "/loanrequests", {
+            onError: (err) => setError(err.message),
+        });
     };
 
     return (
@@ -59,6 +80,7 @@ export default function LoanRequestForm({
             />
 
             <div className="py-12 max-w-4xl mx-auto space-y-6">
+                {error && <p className="text-red-500">{error}</p>}
                 <Card>
                     <CardHeader>
                         <CardTitle>
@@ -84,11 +106,12 @@ export default function LoanRequestForm({
                                     ))}
                                 </select>
                                 {errors.user_id && (
-                                    <p className="text-red-500 text-sm">
+                                    <p className="text-red-500">
                                         {errors.user_id}
                                     </p>
                                 )}
                             </div>
+
                             <div>
                                 <Label>Book</Label>
                                 <select
@@ -106,11 +129,12 @@ export default function LoanRequestForm({
                                     ))}
                                 </select>
                                 {errors.book_id && (
-                                    <p className="text-red-500 text-sm">
+                                    <p className="text-red-500">
                                         {errors.book_id}
                                     </p>
                                 )}
                             </div>
+
                             <div>
                                 <Label>Request Date</Label>
                                 <Input
@@ -121,30 +145,31 @@ export default function LoanRequestForm({
                                     }
                                 />
                                 {errors.request_date && (
-                                    <p className="text-red-500 text-sm">
+                                    <p className="text-red-500">
                                         {errors.request_date}
                                     </p>
                                 )}
                             </div>
 
-                            {(!isEdit ||  loanRequest?.status === "pending") && (
+                            {(!isEdit || loanRequest?.status === "pending") && (
                                 <Button type="submit" disabled={processing}>
-                                    {isEdit ? "Update" : "Save"}
+                                    {processing
+                                        ? "Saving..."
+                                        : isEdit
+                                        ? "Update"
+                                        : "Save"}
                                 </Button>
                             )}
                         </form>
                     </CardContent>
                 </Card>
 
-                {/* Actions if pending */}
                 {isEdit && loanRequest?.status === "pending" && (
                     <div className="flex gap-4 justify-end">
-                        {/* Reject */}
                         <Button variant="destructive" onClick={handleReject}>
                             Reject
                         </Button>
 
-                        {/* Approve */}
                         <Dialog
                             open={showApproveDialog}
                             onOpenChange={setShowApproveDialog}
@@ -158,7 +183,7 @@ export default function LoanRequestForm({
                                 </DialogHeader>
                                 <div className="space-y-4">
                                     <div>
-                                        <Label>Tenggat Pengembalian</Label>
+                                        <Label>Due Date</Label>
                                         <Input
                                             type="date"
                                             value={dueDate}

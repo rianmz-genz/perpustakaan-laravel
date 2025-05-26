@@ -43,7 +43,14 @@ class Loan extends Model
             'book_id'     // Local key on LoanRequest
         );
     }
-        protected $casts = [
+    protected $casts = [
         'is_returned' => 'boolean',
     ];
+
+    public function scopeByUser($query, $userId)
+    {
+        return $query->whereHas('request', function ($q) use ($userId) {
+            $q->where('user_id', $userId);
+        });
+    }
 }

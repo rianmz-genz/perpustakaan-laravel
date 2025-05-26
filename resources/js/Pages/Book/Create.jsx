@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 export default function BookForm({ book = null }) {
     const isEdit = !!book;
     const { data, setData, post, put, processing, errors } = useForm({
+        id: book?.id || "",
         title: book?.title || "",
         author: book?.author || "",
         publisher: book?.publisher || "",
@@ -18,14 +19,7 @@ export default function BookForm({ book = null }) {
     });
     const submit = (e) => {
         e.preventDefault();
-
-        if (isEdit) {
-            post(`/books/${book.id}`, {
-                method: "put", // Method spoofing
-            });
-        } else {
-            post("/books", { forceFormData: true });
-        }
+        post("/books", { forceFormData: true });
     };
 
     return (
