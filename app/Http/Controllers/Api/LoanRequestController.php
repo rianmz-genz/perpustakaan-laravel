@@ -30,7 +30,10 @@ class LoanRequestController extends Controller
 
     public function index()
     {
-        $loanRequests = LoanRequest::where('user_id', Auth::user()->id)->with(['user','book','loan'])->get();
+        $loanRequests = LoanRequest::where('user_id', Auth::user()->id)->with(['user','book','loan','loan.return'])->get()->map(function ($loanRequest) {
+            $loanRequest->book->cover_image = $loanRequest->book->cover_image ? asset('storage/' . $loanRequest->book->cover_image) : null;
+            return $loanRequest;
+        });
         return $this->success($loanRequests, 'Success');
     }
 }
