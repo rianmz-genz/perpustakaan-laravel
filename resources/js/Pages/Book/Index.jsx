@@ -25,7 +25,7 @@ export default function Index() {
                 <div className="max-w-7xl mx-auto space-y-6 sm:px-6 lg:px-8">
                     <Card>
                         <CardHeader className="flex justify-between items-start">
-                            <CardTitle>List of Books</CardTitle>
+                            <CardTitle>Daftar Books</CardTitle>
                             <Link href={route("books.create")}><Button>Create Book</Button></Link>
                         </CardHeader>
                         <CardContent className="overflow-x-auto">

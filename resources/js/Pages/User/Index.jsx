@@ -29,7 +29,7 @@ const Index = () => {
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    User Management
+                    Pengguna
                 </h2>
             }
         >
@@ -40,10 +40,10 @@ const Index = () => {
                     <Card>
                         <CardHeader className="flex items-start justify-between">
                             <CardTitle className="text-lg font-bold">
-                                List of Users
+                                Daftar Pengguna
                             </CardTitle>
                             <Link href={route("users.create")}>
-                                <Button>Create User</Button>
+                                <Button>Buat Pengguna</Button>
                             </Link>
                         </CardHeader>
 
@@ -52,7 +52,7 @@ const Index = () => {
                                 <TableHeader className="bg-primary text-primary-foreground">
                                     <TableRow>
                                         <TableCell className="font-semibold">
-                                            Name
+                                            Nama
                                         </TableCell>
                                         <TableCell className="font-semibold">
                                             Email
@@ -61,7 +61,7 @@ const Index = () => {
                                             Role
                                         </TableCell>
                                         <TableCell className="font-semibold text-center">
-                                            Actions
+                                            Aksi
                                         </TableCell>
                                     </TableRow>
                                 </TableHeader>
@@ -79,7 +79,7 @@ const Index = () => {
                                                         variant="outline"
                                                         className="mr-2"
                                                     >
-                                                        Edit
+                                                        Ubah
                                                     </Button>
                                                 </Link>
 
@@ -111,7 +111,7 @@ const Index = () => {
                                                                     )
                                                                 }
                                                             >
-                                                                Delete
+                                                                Hapus
                                                             </Button>
                                                         </DialogFooter>
                                                     </DialogContent>

@@ -29,7 +29,7 @@ export default function Index({ loans }) {
                 <div className="max-w-7xl mx-auto space-y-6 sm:px-6 lg:px-8">
                     <Card>
                         <CardHeader className="flex justify-between items-start">
-                            <CardTitle>List of Peminjaman</CardTitle>
+                            <CardTitle>Daftar Peminjaman</CardTitle>
                             {/* <Link href={route("loans.create")}>
                                 <Button>Create Peminjaman</Button>
                             </Link> */}

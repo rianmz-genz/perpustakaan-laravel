@@ -61,7 +61,12 @@ export default function LoanForm({ loan }) {
                     <CardContent className="space-y-2">
                         <div className="flex flex-col items-start">
                             <Label>Nama Peminjam</Label>
-                            <Link className="underline italic" href={`/users/${loan.request?.user?.id}`}>{loan.request?.user?.name}</Link>
+                            <Link
+                                className="underline italic"
+                                href={`/users/${loan.request?.user?.id}`}
+                            >
+                                {loan.request?.user?.name}
+                            </Link>
                         </div>
                         <div>
                             <Label>Email</Label>
@@ -69,7 +74,12 @@ export default function LoanForm({ loan }) {
                         </div>
                         <div className="flex flex-col items-start">
                             <p>Judul Buku</p>
-                            <a className="italic underline" href={`/boooks/${loan.request?.book?.id}`}>{loan.request?.book?.title}</a>
+                            <a
+                                className="italic underline"
+                                href={`/boooks/${loan.request?.book?.id}`}
+                            >
+                                {loan.request?.book?.title}
+                            </a>
                         </div>
                         <div>
                             <Label>Penulis</Label>
@@ -141,24 +151,56 @@ export default function LoanForm({ loan }) {
                                 </DialogHeader>
                                 <div className="space-y-4">
                                     <div>
-                                        <Label>Tanggal Pengembalian</Label>
+                                        <p>Tenggat Pengembalian</p>
+                                        <p>{loan.due_date}</p>
+                                    </div>
+                                    <div>
+                                        <Label>Dikembalikan Pada</Label>
                                         <Input
                                             type="date"
                                             value={returnForm.return_date}
                                             onChange={(e) => {
-                                                const returnDate =
-                                                    e.target.value;
-                                                setReturnForm(
-                                                    "return_date",
-                                                    returnDate
+                                                const returnDate = new Date(
+                                                    e.target.value
+                                                );
+                                                const dueDate = new Date(
+                                                    loan.due_date
                                                 );
                                                 const isLate =
-                                                    new Date(returnDate) >
-                                                    new Date(loan.due_date);
+                                                    returnDate > dueDate;
+
+                                                setReturnForm(
+                                                    "return_date",
+                                                    e.target.value
+                                                );
                                                 setReturnForm(
                                                     "is_late",
                                                     isLate
                                                 );
+
+                                                if (isLate) {
+                                                    const diffTime =
+                                                        returnDate.getTime() -
+                                                        dueDate.getTime();
+                                                    const diffDays = Math.ceil(
+                                                        diffTime /
+                                                            (1000 *
+                                                                60 *
+                                                                60 *
+                                                                24)
+                                                    );
+                                                    const fine =
+                                                        diffDays * 2000;
+                                                    setReturnForm(
+                                                        "fine_amount",
+                                                        fine
+                                                    );
+                                                } else {
+                                                    setReturnForm(
+                                                        "fine_amount",
+                                                        0
+                                                    );
+                                                }
                                             }}
                                         />
                                         {returnErrors.return_date && (
@@ -232,17 +274,13 @@ export default function LoanForm({ loan }) {
                                     )}
 
                                     <div>
-                                        <Label>Denda (Rp)</Label>
-                                        <Input
-                                            type="number"
-                                            value={returnForm.fine_amount}
-                                            onChange={(e) =>
-                                                setReturnForm(
-                                                    "fine_amount",
-                                                    parseFloat(e.target.value)
-                                                )
-                                            }
-                                        />
+                                        <Label>Denda (Rp 2.000/Hari)</Label>
+                                        <p>
+                                            Rp{" "}
+                                            {returnForm.fine_amount.toLocaleString(
+                                                "id-ID"
+                                            )}
+                                        </p>
                                     </div>
 
                                     {returnForm.is_late && (

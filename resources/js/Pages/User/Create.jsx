@@ -22,12 +22,17 @@ export default function Create({ auth }) {
         post("/users");
     };
 
+    const prodiOptions = {
+        FIK: ["Informatika", "Sistem Informasi", "Teknologi Informasi"],
+        FBIS: ["Bisnis Digital", "Ilmu Komunikasi"],
+    };
+
     return (
         <AuthenticatedLayout
             auth={auth}
-            header={<h2 className="text-xl font-semibold leading-tight text-gray-800">Create User</h2>}
+            header={<h2 className="text-xl font-semibold leading-tight text-gray-800">Buat Pengguna</h2>}
         >
-            <Head title="Create User" />
+            <Head title="Buat Pengguna" />
 
             <div className="py-12">
                 <div className="mx-auto max-w-4xl sm:px-6 lg:px-8">
@@ -97,21 +102,38 @@ export default function Create({ auth }) {
 
                                         <div>
                                             <Label htmlFor="fakultas">Fakultas</Label>
-                                            <Input
+                                            <select
                                                 id="fakultas"
                                                 value={data.fakultas}
-                                                onChange={(e) => setData("fakultas", e.target.value)}
-                                            />
+                                                onChange={(e) => {
+                                                    setData("fakultas", e.target.value);
+                                                    setData("prodi", ""); // reset prodi saat fakultas berubah
+                                                }}
+                                                className="w-full border rounded-md p-2"
+                                            >
+                                                <option value="">Pilih Fakultas</option>
+                                                <option value="FIK">FIK</option>
+                                                <option value="FBIS">FBIS</option>
+                                            </select>
                                             {errors.fakultas && <p className="text-red-500 text-sm">{errors.fakultas}</p>}
                                         </div>
 
                                         <div>
                                             <Label htmlFor="prodi">Prodi</Label>
-                                            <Input
+                                            <select
                                                 id="prodi"
                                                 value={data.prodi}
                                                 onChange={(e) => setData("prodi", e.target.value)}
-                                            />
+                                                className="w-full border rounded-md p-2"
+                                                disabled={!data.fakultas}
+                                            >
+                                                <option value="">Pilih Prodi</option>
+                                                {(prodiOptions[data.fakultas] || []).map((prodi) => (
+                                                    <option key={prodi} value={prodi}>
+                                                        {prodi}
+                                                    </option>
+                                                ))}
+                                            </select>
                                             {errors.prodi && <p className="text-red-500 text-sm">{errors.prodi}</p>}
                                         </div>
 

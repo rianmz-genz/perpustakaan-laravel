@@ -30,7 +30,7 @@ export default function Index({ loanRequests }) {
                 <div className="max-w-7xl mx-auto space-y-6 sm:px-6 lg:px-8">
                     <Card>
                         <CardHeader className="flex justify-between items-start">
-                            <CardTitle>List of Permintaan Peminjaman</CardTitle>
+                            <CardTitle>Daftar Permintaan Peminjaman</CardTitle>
                             <Link href={route("loanrequests.create")}>
                                 <Button>Create Permintaan Peminjaman</Button>
                             </Link>

@@ -34,7 +34,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                     href={route("users.index")}
                                     active={route().current("users.index")}
                                 >
-                                    User
+                                    Pengguna
                                 </NavLink>
                                 <NavLink
                                     href={route("books.index")}
@@ -162,7 +162,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             href={route("users.index")}
                             active={route().current("users.index")}
                         >
-                            User
+                            Pengguna
                         </ResponsiveNavLink>
                     </div>
 
