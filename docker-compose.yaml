@@ -6,6 +6,7 @@ services:
     container_name: laravel_api
     restart: unless-stopped
     environment:
+      APP_NAME: "Distribook"
       APP_ENV: production
       APP_DEBUG: false
       DB_CONNECTION: mysql
@@ -25,7 +26,7 @@ services:
       MAIL_USERNAME: cukbujang@gmail.com
       MAIL_PASSWORD: "qpyi wklk azzo dswt"
       MAIL_FROM_ADDRESS: "no-reply@gmail.com"
-      MAIL_FROM_NAME: "${APP_NAME}"
+      MAIL_FROM_NAME: "Distribook"
       MAIL_ENCRYPTION: tls
     ports:
       - "6310:8080"
